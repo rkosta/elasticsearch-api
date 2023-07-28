@@ -6,6 +6,6 @@ import { SearchModule } from 'src/search/search.module';
 @Module({
   imports: [SearchModule],
   providers: [WorkItemService],
-  controllers: [WorkItemController]
+  controllers: [WorkItemController],
 })
 export class WorkItemModule {}
