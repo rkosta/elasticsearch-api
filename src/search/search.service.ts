@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Client } from '@elastic/elasticsearch';
+import { Observable, of } from 'rxjs';
 
 @Injectable()
 export class SearchService {
@@ -14,6 +15,12 @@ export class SearchService {
       tls: {
         rejectUnauthorized: false,
       },
+    });
+  }
+
+  public IndiceExists(index: string): Promise<boolean> {
+    return this.client.indices.exists({
+      index: index,
     });
   }
 }
