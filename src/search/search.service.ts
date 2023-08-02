@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Client } from '@elastic/elasticsearch';
 import { Observable, of } from 'rxjs';
+import { AggregationsAggregationContainer, CountResponse, SearchResponse } from '@elastic/elasticsearch/lib/api/types';
 
 @Injectable()
 export class SearchService {
@@ -18,9 +19,50 @@ export class SearchService {
     });
   }
 
-  public IndiceExists(index: string): Promise<boolean> {
+  public indiceExists(index: string): Promise<boolean> {
     return this.client.indices.exists({
       index: index,
     });
+  }
+
+  public getDocumentCount(index: string): Promise<CountResponse>{
+    return this.client.count({
+      index: index,
+      query: {
+        match_all: {}
+      }
+    })
+  }
+
+  public searchWorkItems(index: string,
+    phrase: string,
+    from: number, 
+    size: number,
+    aggregations: string[]): Promise<SearchResponse>{
+      debugger;
+
+      let searchAggregations: Record<string, AggregationsAggregationContainer> = {}
+      for (let index = 0; index < aggregations.length; index++) {
+        const agg = aggregations[index];
+        searchAggregations[agg] = {
+          terms: {
+            field: agg,
+            size: 1000000
+          }
+        }
+      }
+    
+    return this.client.search({
+      index: index,
+      query: {
+        simple_query_string: {
+          query: phrase
+        }
+      },
+      track_total_hits: true,
+      size: size,
+      from: from,
+      aggregations: searchAggregations
+    })
   }
 }
