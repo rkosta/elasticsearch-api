@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Client } from '@elastic/elasticsearch';
 import { Observable, of } from 'rxjs';
 import { AggregationsAggregationContainer, CountResponse, SearchResponse } from '@elastic/elasticsearch/lib/api/types';
+import { config } from 'src/configuration/config';
 
 @Injectable()
 /* The SearchService class provides methods for interacting with Elasticsearch, including checking if
@@ -16,9 +17,9 @@ export class SearchService {
    */
   public constructor() {
     this.client = new Client({
-      node: 'https://localhost:9200',
+      node: config.ElasticSearchUrl,
       auth: {
-        apiKey: 'LWRFSTFZZ0IyY3JJaC04X0IzQnE6bHBCdlVxcjJTbUt3QTFVeGtaQWh2UQ',
+        apiKey: config.ElasticSearchApiKey,
       },
       tls: {
         rejectUnauthorized: false,
